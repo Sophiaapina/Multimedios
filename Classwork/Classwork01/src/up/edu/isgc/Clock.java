@@ -68,6 +68,7 @@ public class Clock {
 
         int dx = x2 - x1;
         int dy = y2 - y1;
+
         int steps = Math.max(Math.abs(dx), Math.abs(dy));
 
         double x = x1;

@@ -1,0 +1,2 @@
+Hola, este es un archivo de prueba para traducir con Java y OpenAI.
+Me gusta programar y aprender cosas nuevas.

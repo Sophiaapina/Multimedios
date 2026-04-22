@@ -7,7 +7,6 @@ import service.GeocodingService;
 import service.MapService;
 import service.OpenAIService;
 import service.VideoAssemblerService;
-import model.MediaItem;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -79,8 +78,19 @@ public class VideoCreatorController {
         File mapImage = new File(workDir, "map.png");
 
 
+        if (firstGps != null && lastGps != null) {
+            mapService.generateMapImage(
+                    firstGps.getLatitude(),
+                    firstGps.getLongitude(),
+                    lastGps.getLatitude(),
+                    lastGps.getLongitude(),
+                    phrase,
+                    mapImage
+            );
+        } else {
+            log("No GPS data available for map.");
+        }
 
-        mapService.generateMap(items, mapImage);
         progress(++step, totalSteps, "Generating AI narration audio...");
         File narrationAudio = new File(workDir, "full_narration.wav");
         openAIService.textToSpeech(narration, narrationAudio);

@@ -179,7 +179,7 @@ public class AppGUI extends JFrame {
         createBtn = new JButton("Create Video");
         createBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
         createBtn.setBackground(ACCENT);
-        createBtn.setForeground(Color.WHITE);
+        createBtn.setForeground(Color.black);
         createBtn.setFocusPainted(false);
         createBtn.addActionListener(e -> onCreateVideo());
 
@@ -364,7 +364,7 @@ public class AppGUI extends JFrame {
     private JButton makeButton(String text) {
         JButton btn = new JButton(text);
         btn.setBackground(new Color(70, 70, 70));
-        btn.setForeground(Color.WHITE);
+        btn.setForeground(Color.black);
         btn.setFocusPainted(false);
         return btn;
     }

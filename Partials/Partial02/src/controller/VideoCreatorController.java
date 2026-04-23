@@ -85,7 +85,9 @@ public class VideoCreatorController {
                     lastGps.getLatitude(),
                     lastGps.getLongitude(),
                     phrase,
-                    mapImage
+                    mapImage,
+                    firstPlace,
+                    lastPlace
             );
         } else {
             log("No GPS data available for map.");

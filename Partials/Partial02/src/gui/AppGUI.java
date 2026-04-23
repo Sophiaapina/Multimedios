@@ -120,10 +120,10 @@ public class AppGUI extends JFrame {
         row.setBackground(BG_DARK);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
-        JLabel label = styledLabel("Gemini API Key:");
+        JLabel label = styledLabel("OpenAI API Key:");
         apiKeyField = new JPasswordField();
         styleTextField(apiKeyField);
-        apiKeyField.setToolTipText("Paste your Google AI Studio API key here");
+        apiKeyField.setToolTipText("API key here");
 
         row.add(label,       BorderLayout.WEST);
         row.add(apiKeyField, BorderLayout.CENTER);
@@ -181,9 +181,9 @@ public class AppGUI extends JFrame {
         row.setBackground(BG_DARK);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
-        JLabel label = styledLabel("Output Video:");
+        JLabel label = styledLabel("Save Here:");
         outputPathField = new JTextField(
-                System.getProperty("user.home") + File.separator + "my_journey.mp4");
+                System.getProperty("user.home") + File.separator + "Result.mp4");
         styleTextField(outputPathField);
 
         JButton browseBtn = styledButton("Browse", new Color(60, 80, 120));

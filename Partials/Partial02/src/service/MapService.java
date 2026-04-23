@@ -1,11 +1,11 @@
 package service;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class MapService {
 
@@ -17,7 +17,9 @@ public class MapService {
                                  double lastLat,
                                  double lastLon,
                                  String phrase,
-                                 File outputFile) throws IOException {
+                                 File outputFile,
+                                 String firstPlace,
+                                 String lastPlace) throws IOException {
 
         BufferedImage img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
@@ -48,6 +50,7 @@ public class MapService {
 
         drawTitle(g);
         drawLegend(g, bounds);
+        drawRouteName(g, firstPlace, lastPlace);
         drawPhrase(g, phrase);
 
         g.dispose();
@@ -223,9 +226,25 @@ public class MapService {
 
         g.setFont(new Font("SansSerif", Font.PLAIN, 22));
         g.setColor(new Color(210, 220, 230));
-        String zoomText = String.format("Zoomed area: %.2f° to %.2f° lat | %.2f° to %.2f° lon",
-                bounds.minLat, bounds.maxLat, bounds.minLon, bounds.maxLon);
+        String zoomText = String.format(
+                "Zoomed area: %.2f° to %.2f° lat | %.2f° to %.2f° lon",
+                bounds.minLat, bounds.maxLat, bounds.minLon, bounds.maxLon
+        );
         g.drawString(zoomText, 120, y + 48);
+    }
+
+    private void drawRouteName(Graphics2D g, String firstPlace, String lastPlace) {
+        int y = 1430;
+
+        String route = firstPlace + " → " + lastPlace;
+
+        g.setFont(new Font("SansSerif", Font.BOLD, 28));
+        g.setColor(new Color(235, 240, 245));
+
+        FontMetrics fm = g.getFontMetrics();
+        int x = (WIDTH - fm.stringWidth(route)) / 2;
+
+        g.drawString(route, x, y);
     }
 
     private void drawPhrase(Graphics2D g, String phrase) {

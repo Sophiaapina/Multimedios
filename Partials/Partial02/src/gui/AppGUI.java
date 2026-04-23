@@ -12,25 +12,22 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class AppGUI extends JFrame {
 
-    private static final Color BG_DARK     = new Color(12, 18, 28);
-    private static final Color BG_PANEL    = new Color(20, 28, 40);
-    private static final Color ACCENT_TEAL = new Color(0, 220, 180);
-    private static final Color ACCENT_RED  = new Color(180, 20, 40);
-    private static final Color TEXT_WHITE  = new Color(240, 240, 240);
-    private static final Color TEXT_DIM    = new Color(150, 160, 170);
+    private static final Color BG = new Color(28, 32, 38);
+    private static final Color PANEL = new Color(40, 45, 52);
+    private static final Color TEXT = new Color(235, 235, 235);
+    private static final Color TEXT_SOFT = new Color(190, 190, 190);
+    private static final Color ACCENT = new Color(70, 130, 180);
 
-
-    private JPasswordField  apiKeyField;
+    private JPasswordField apiKeyField;
     private DefaultListModel<String> fileListModel;
-    private JList<String>   fileList;
-    private List<File>      selectedFiles;
-    private JTextField      outputPathField;
-    private JButton         createBtn;
-    private JProgressBar    progressBar;
-    private JTextArea       logArea;
+    private JList<String> fileList;
+    private List<File> selectedFiles;
+    private JTextField outputPathField;
+    private JButton createBtn;
+    private JProgressBar progressBar;
+    private JTextArea logArea;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -43,121 +40,100 @@ public class AppGUI extends JFrame {
 
     private void initUI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(820, 760);
+        setSize(760, 700);
         setLocationRelativeTo(null);
-        setResizable(true);
 
-        JPanel root = new JPanel(new BorderLayout(0, 0));
-        root.setBackground(BG_DARK);
+        JPanel root = new JPanel(new BorderLayout());
+        root.setBackground(BG);
+        root.setBorder(new EmptyBorder(12, 12, 12, 12));
         setContentPane(root);
 
-        root.add(buildHeader(),      BorderLayout.NORTH);
-        root.add(buildMainPanel(),   BorderLayout.CENTER);
-        root.add(buildLogPanel(),    BorderLayout.SOUTH);
+        root.add(buildTopPanel(), BorderLayout.NORTH);
+        root.add(buildCenterPanel(), BorderLayout.CENTER);
+        root.add(buildBottomPanel(), BorderLayout.SOUTH);
     }
 
-
-    private JPanel buildHeader() {
-        JPanel header = new JPanel() {
-            @Override protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g;
-                GradientPaint gp = new GradientPaint(
-                        0, 0, new Color(0, 70, 60),
-                        getWidth(), getHeight(), new Color(60, 0, 20));
-                g2.setPaint(gp);
-                g2.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
-        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-        header.setBorder(new EmptyBorder(24, 32, 24, 32));
-
-        JLabel title = new JLabel("GPS MEDIA VIDEO CREATOR");
-        title.setFont(new Font("SansSerif", Font.BOLD, 28));
-        title.setForeground(TEXT_WHITE);
-        title.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel sub = new JLabel("Multimedia & Computer Graphics — Universidad Panamericana 2026");
-        sub.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        sub.setForeground(ACCENT_TEAL);
-        sub.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JSeparator sep = new JSeparator();
-        sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
-        sep.setForeground(ACCENT_RED);
-        sep.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        header.add(sep);
-        header.add(Box.createVerticalStrut(12));
-        header.add(title);
-        header.add(Box.createVerticalStrut(6));
-        header.add(sub);
-        return header;
-    }
-
-
-    private JPanel buildMainPanel() {
+    private JPanel buildTopPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(BG_DARK);
-        panel.setBorder(new EmptyBorder(20, 32, 10, 32));
+        panel.setBackground(BG);
+        panel.setBorder(new EmptyBorder(0, 0, 12, 0));
 
-        panel.add(buildApiKeyRow());
-        panel.add(Box.createVerticalStrut(16));
-        panel.add(buildFileSection());
-        panel.add(Box.createVerticalStrut(16));
-        panel.add(buildOutputRow());
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(buildCreateRow());
-        panel.add(Box.createVerticalStrut(14));
-        panel.add(buildProgressRow());
+        JLabel title = new JLabel("GPS Media Video Creator");
+        title.setFont(new Font("SansSerif", Font.BOLD, 24));
+        title.setForeground(TEXT);
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel subtitle = new JLabel("Create a travel video from photos and videos with GPS.");
+        subtitle.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        subtitle.setForeground(TEXT_SOFT);
+        subtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panel.add(title);
+        panel.add(Box.createVerticalStrut(4));
+        panel.add(subtitle);
+
         return panel;
     }
 
+    private JPanel buildCenterPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(BG);
 
-    private JPanel buildApiKeyRow() {
+        panel.add(buildApiRow());
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(buildFilesPanel());
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(buildOutputRow());
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(buildCreateRow());
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(buildProgressRow());
+
+        return panel;
+    }
+
+    private JPanel buildApiRow() {
         JPanel row = new JPanel(new BorderLayout(10, 0));
-        row.setBackground(BG_DARK);
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        row.setBackground(BG);
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
-        JLabel label = styledLabel("OpenAI API Key:");
+        JLabel label = makeLabel("OpenAI API Key:");
         apiKeyField = new JPasswordField();
-        styleTextField(apiKeyField);
-        apiKeyField.setToolTipText("API key here");
+        styleField(apiKeyField);
 
-        row.add(label,       BorderLayout.WEST);
+        row.add(label, BorderLayout.WEST);
         row.add(apiKeyField, BorderLayout.CENTER);
+
         return row;
     }
 
+    private JPanel buildFilesPanel() {
+        JPanel panel = new JPanel(new BorderLayout(0, 8));
+        panel.setBackground(BG);
 
-    private JPanel buildFileSection() {
-        JPanel section = new JPanel(new BorderLayout(0, 8));
-        section.setBackground(BG_DARK);
-        section.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel label = styledLabel("Media Files (photos & videos with GPS data):");
-        section.add(label, BorderLayout.NORTH);
+        JLabel label = makeLabel("Files:");
+        panel.add(label, BorderLayout.NORTH);
 
         fileListModel = new DefaultListModel<>();
         fileList = new JList<>(fileListModel);
-        fileList.setBackground(BG_PANEL);
-        fileList.setForeground(TEXT_WHITE);
-        fileList.setSelectionBackground(ACCENT_TEAL.darker());
-        fileList.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        fileList.setBorder(BorderFactory.createLineBorder(new Color(40, 55, 70)));
+        fileList.setBackground(PANEL);
+        fileList.setForeground(TEXT);
+        fileList.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        fileList.setSelectionBackground(new Color(80, 90, 110));
+        fileList.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 
         JScrollPane scroll = new JScrollPane(fileList);
-        scroll.setPreferredSize(new Dimension(0, 160));
-        scroll.getViewport().setBackground(BG_PANEL);
-        scroll.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 100)));
+        scroll.setPreferredSize(new Dimension(0, 180));
+        scroll.setBorder(BorderFactory.createLineBorder(new Color(90, 90, 90)));
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        btnPanel.setBackground(BG_DARK);
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        buttons.setBackground(BG);
 
-        JButton addBtn    = styledButton("+ Add Files",   ACCENT_TEAL);
-        JButton removeBtn = styledButton("− Remove",      ACCENT_RED);
-        JButton clearBtn  = styledButton("✕ Clear All",   new Color(80, 90, 110));
+        JButton addBtn = makeButton("Add Files");
+        JButton removeBtn = makeButton("Remove");
+        JButton clearBtn = makeButton("Clear");
 
         addBtn.addActionListener(e -> onAddFiles());
         removeBtn.addActionListener(e -> onRemoveSelected());
@@ -167,47 +143,44 @@ public class AppGUI extends JFrame {
             log("File list cleared.");
         });
 
-        btnPanel.add(addBtn);
-        btnPanel.add(removeBtn);
-        btnPanel.add(clearBtn);
+        buttons.add(addBtn);
+        buttons.add(removeBtn);
+        buttons.add(clearBtn);
 
-        section.add(scroll,   BorderLayout.CENTER);
-        section.add(btnPanel, BorderLayout.SOUTH);
-        return section;
+        panel.add(scroll, BorderLayout.CENTER);
+        panel.add(buttons, BorderLayout.SOUTH);
+
+        return panel;
     }
 
     private JPanel buildOutputRow() {
         JPanel row = new JPanel(new BorderLayout(10, 0));
-        row.setBackground(BG_DARK);
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        row.setBackground(BG);
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
-        JLabel label = styledLabel("Save Here:");
-        outputPathField = new JTextField(
-                System.getProperty("user.home") + File.separator + "Result.mp4");
-        styleTextField(outputPathField);
+        JLabel label = makeLabel("Output:");
+        outputPathField = new JTextField(System.getProperty("user.home") + File.separator + "result.mp4");
+        styleField(outputPathField);
 
-        JButton browseBtn = styledButton("Browse", new Color(60, 80, 120));
+        JButton browseBtn = makeButton("Browse");
         browseBtn.addActionListener(e -> onBrowseOutput());
 
-        row.add(label,           BorderLayout.WEST);
+        row.add(label, BorderLayout.WEST);
         row.add(outputPathField, BorderLayout.CENTER);
-        row.add(browseBtn,       BorderLayout.EAST);
+        row.add(browseBtn, BorderLayout.EAST);
+
         return row;
     }
 
     private JPanel buildCreateRow() {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        row.setBackground(BG_DARK);
+        row.setBackground(BG);
 
-        createBtn = new JButton("▶  CREATE VIDEO");
-        createBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
+        createBtn = new JButton("Create Video");
+        createBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        createBtn.setBackground(ACCENT);
         createBtn.setForeground(Color.WHITE);
-        createBtn.setBackground(ACCENT_RED);
         createBtn.setFocusPainted(false);
-        createBtn.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(ACCENT_RED.darker(), 1),
-                new EmptyBorder(10, 40, 10, 40)));
-        createBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         createBtn.addActionListener(e -> onCreateVideo());
 
         row.add(createBtn);
@@ -215,43 +188,42 @@ public class AppGUI extends JFrame {
     }
 
     private JPanel buildProgressRow() {
-        JPanel row = new JPanel(new BorderLayout(0, 4));
-        row.setBackground(BG_DARK);
+        JPanel row = new JPanel(new BorderLayout());
+        row.setBackground(BG);
 
         progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
         progressBar.setString("Ready");
-        progressBar.setForeground(ACCENT_TEAL);
-        progressBar.setBackground(BG_PANEL);
-        progressBar.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        progressBar.setBorder(BorderFactory.createLineBorder(new Color(40, 55, 70)));
+        progressBar.setForeground(ACCENT);
+        progressBar.setBackground(PANEL);
 
         row.add(progressBar, BorderLayout.CENTER);
         return row;
     }
 
-    private JScrollPane buildLogPanel() {
-        logArea = new JTextArea(7, 0);
+    private JScrollPane buildBottomPanel() {
+        logArea = new JTextArea(8, 0);
         logArea.setEditable(false);
-        logArea.setBackground(new Color(8, 12, 18));
-        logArea.setForeground(ACCENT_TEAL);
+        logArea.setBackground(new Color(22, 24, 28));
+        logArea.setForeground(new Color(210, 210, 210));
         logArea.setFont(new Font("Monospaced", Font.PLAIN, 11));
-        logArea.setBorder(new EmptyBorder(8, 12, 8, 12));
-        logArea.setText("» GPS Media Video Creator ready.\n");
+        logArea.setBorder(new EmptyBorder(8, 8, 8, 8));
+        logArea.setText("Ready.\n");
 
-        JScrollPane sp = new JScrollPane(logArea);
-        sp.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, new Color(0, 80, 60)));
-        return sp;
+        JScrollPane scroll = new JScrollPane(logArea);
+        scroll.setBorder(BorderFactory.createTitledBorder("Log"));
+        return scroll;
     }
 
     private void onAddFiles() {
         JFileChooser fc = new JFileChooser();
         fc.setMultiSelectionEnabled(true);
-        fc.setDialogTitle("Select Photos and Videos");
+        fc.setDialogTitle("Select media files");
         fc.setFileFilter(new FileNameExtensionFilter(
-                "Media Files (jpg, jpeg, png, heic, mp4, mov, avi, mkv)",
+                "Media Files",
                 "jpg", "jpeg", "png", "heic", "webp",
-                "mp4", "mov", "avi", "mkv", "m4v", "3gp"));
+                "mp4", "mov", "avi", "mkv", "m4v", "3gp"
+        ));
 
         int result = fc.showOpenDialog(this);
         if (result != JFileChooser.APPROVE_OPTION) return;
@@ -259,10 +231,11 @@ public class AppGUI extends JFrame {
         for (File f : fc.getSelectedFiles()) {
             if (!selectedFiles.contains(f)) {
                 selectedFiles.add(f);
-                fileListModel.addElement(f.getName() + "  [" + f.getParentFile().getName() + "]");
+                fileListModel.addElement(f.getName());
             }
         }
-        log(fc.getSelectedFiles().length + " file(s) added. Total: " + selectedFiles.size());
+
+        log(fc.getSelectedFiles().length + " file(s) added.");
     }
 
     private void onRemoveSelected() {
@@ -276,31 +249,35 @@ public class AppGUI extends JFrame {
 
     private void onBrowseOutput() {
         JFileChooser fc = new JFileChooser();
-        fc.setDialogTitle("Save Output Video");
+        fc.setDialogTitle("Save output video");
         fc.setSelectedFile(new File(outputPathField.getText()));
         fc.setFileFilter(new FileNameExtensionFilter("MP4 Video", "mp4"));
+
         if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
             String path = f.getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".mp4")) path += ".mp4";
+            if (!path.toLowerCase().endsWith(".mp4")) {
+                path += ".mp4";
+            }
             outputPathField.setText(path);
         }
     }
 
     private void onCreateVideo() {
-        // Validate inputs
         String apiKey = new String(apiKeyField.getPassword()).trim();
         if (apiKey.isEmpty()) {
-            showError("Please enter your Gemini API key.");
+            showError("Please enter your OpenAI API key.");
             return;
         }
+
         if (selectedFiles.isEmpty()) {
-            showError("Please add at least one media file.");
+            showError("Please add at least one file.");
             return;
         }
+
         String outputPath = outputPathField.getText().trim();
         if (outputPath.isEmpty()) {
-            showError("Please specify an output file path.");
+            showError("Please choose an output path.");
             return;
         }
 
@@ -317,7 +294,7 @@ public class AppGUI extends JFrame {
                     (current, total) -> SwingUtilities.invokeLater(() -> {
                         int pct = (int) ((current / (double) total) * 100);
                         progressBar.setValue(pct);
-                        progressBar.setString(current + "/" + total + "  (" + pct + "%)");
+                        progressBar.setString(current + "/" + total + " (" + pct + "%)");
                     }),
                     message -> SwingUtilities.invokeLater(() -> log(message))
             );
@@ -326,10 +303,13 @@ public class AppGUI extends JFrame {
                 controller.createVideo(files, outputFile);
                 SwingUtilities.invokeLater(() -> {
                     progressBar.setValue(100);
-                    progressBar.setString("Complete!");
-                    JOptionPane.showMessageDialog(AppGUI.this,
-                            "Video created successfully!\n" + outputFile.getAbsolutePath(),
-                            "Done", JOptionPane.INFORMATION_MESSAGE);
+                    progressBar.setString("Done");
+                    JOptionPane.showMessageDialog(
+                            AppGUI.this,
+                            "Video created successfully.\n" + outputFile.getAbsolutePath(),
+                            "Done",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                 });
             } catch (Exception ex) {
                 SwingUtilities.invokeLater(() -> {
@@ -343,19 +323,19 @@ public class AppGUI extends JFrame {
         });
     }
 
-
     private void setProcessing(boolean processing) {
         createBtn.setEnabled(!processing);
         apiKeyField.setEnabled(!processing);
+
         if (processing) {
-            createBtn.setText("⏳  Processing...");
+            createBtn.setText("Processing...");
         } else {
-            createBtn.setText("▶  CREATE VIDEO");
+            createBtn.setText("Create Video");
         }
     }
 
     private void log(String message) {
-        logArea.append("» " + message + "\n");
+        logArea.append("> " + message + "\n");
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
@@ -363,32 +343,29 @@ public class AppGUI extends JFrame {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    private JLabel styledLabel(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setForeground(TEXT_DIM);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
-        lbl.setPreferredSize(new Dimension(175, 28));
-        return lbl;
+    private JLabel makeLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setForeground(TEXT_SOFT);
+        label.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        label.setPreferredSize(new Dimension(120, 28));
+        return label;
     }
 
-    private void styleTextField(JTextField field) {
-        field.setBackground(BG_PANEL);
-        field.setForeground(TEXT_WHITE);
-        field.setCaretColor(ACCENT_TEAL);
-        field.setFont(new Font("SansSerif", Font.PLAIN, 13));
+    private void styleField(JTextField field) {
+        field.setBackground(PANEL);
+        field.setForeground(TEXT);
+        field.setCaretColor(Color.WHITE);
         field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(0, 100, 80)),
-                new EmptyBorder(4, 8, 4, 8)));
+                BorderFactory.createLineBorder(new Color(90, 90, 90)),
+                new EmptyBorder(4, 8, 4, 8)
+        ));
     }
 
-    private JButton styledButton(String text, Color bg) {
+    private JButton makeButton(String text) {
         JButton btn = new JButton(text);
-        btn.setBackground(bg);
+        btn.setBackground(new Color(70, 70, 70));
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
         btn.setFocusPainted(false);
-        btn.setBorder(new EmptyBorder(6, 14, 6, 14));
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return btn;
     }
 }
